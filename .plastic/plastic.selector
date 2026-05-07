@@ -1,0 +1,4 @@
+repository "living_room_museum/living_room_museum@1375916299719@cloud"
+  path "/"
+    br "/main"
+    co "/main"

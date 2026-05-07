@@ -831,6 +831,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8148100148100148101, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+      propertyPath: displayTexture
+      value: 
+      objectReference: {fileID: 2800000, guid: 61ffdcaac49027c4a8023cbd8045dbe5, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1070,6 +1074,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2045817117}
+  - component: {fileID: 8148100148100148102}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Untagged
@@ -1097,6 +1102,24 @@ Transform:
   - {fileID: 488961291}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8148100148100148102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045817116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c27f18a5e3149d6b0f2a8c1e4d7b395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactDistance: 10
+  panelSize: {x: 760, y: 460}
+  imageSize: {x: 240, y: 240}
+  videoSize: {x: 240, y: 135}
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.45}
+  panelColor: {r: 0.1, g: 0.09, b: 0.08, a: 0.94}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

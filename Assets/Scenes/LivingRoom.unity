@@ -259,6 +259,55 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 7925618946495050636, guid: f992266e0743eff49bfa8d7dbc5abbad, type: 3}
+--- !u!1 &406819733 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4871606133080033505, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+  m_PrefabInstance: {fileID: 1337773755}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &406819735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406819733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9f787cf8853eca49946fa8f110dee88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
+  autoCreateClickCollider: 1
+  colliderPadding: {x: 0.02, y: 0.02, z: 0.02}
+  releaseSurfaceOffset: 0.005
+  landingRayStartHeight: 1
+  landingRayDistance: 5
+--- !u!54 &406819736
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406819733}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 3
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -464,6 +513,104 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8063073397250431797, guid: f0271df749728104eac22c3d897fd8ce, type: 3}
   m_PrefabInstance: {fileID: 488961290}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &592579539 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5066524598583347415, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+  m_PrefabInstance: {fileID: 1337773755}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &592579541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 592579539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9f787cf8853eca49946fa8f110dee88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
+  autoCreateClickCollider: 1
+  colliderPadding: {x: 0.02, y: 0.02, z: 0.02}
+  releaseSurfaceOffset: 0.005
+  landingRayStartHeight: 1
+  landingRayDistance: 5
+--- !u!54 &592579542
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 592579539}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 3
+--- !u!1 &673196160 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6575220730272669924, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+  m_PrefabInstance: {fileID: 1337773755}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &673196163
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673196160}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 3
+--- !u!114 &673196165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673196160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9f787cf8853eca49946fa8f110dee88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DraggableObject
+  autoCreateClickCollider: 1
+  colliderPadding: {x: 0.02, y: 0.02, z: 0.02}
+  releaseSurfaceOffset: 0.005
+  landingRayStartHeight: 1
+  landingRayDistance: 5
 --- !u!1001 &801386786
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -839,6 +986,24 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6575220730272669924, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 673196165}
+    - targetCorrespondingSourceObject: {fileID: 6575220730272669924, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 673196163}
+    - targetCorrespondingSourceObject: {fileID: 4871606133080033505, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 406819735}
+    - targetCorrespondingSourceObject: {fileID: 4871606133080033505, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 406819736}
+    - targetCorrespondingSourceObject: {fileID: 5066524598583347415, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 592579541}
+    - targetCorrespondingSourceObject: {fileID: 5066524598583347415, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 592579542}
     - targetCorrespondingSourceObject: {fileID: 2705055931869944771, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1337773766}
@@ -1075,6 +1240,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2045817117}
   - component: {fileID: 8148100148100148102}
+  - component: {fileID: 8148100148100148103}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Untagged
@@ -1120,6 +1286,28 @@ MonoBehaviour:
   videoSize: {x: 240, y: 135}
   overlayColor: {r: 0, g: 0, b: 0, a: 0.45}
   panelColor: {r: 0.1, g: 0.09, b: 0.08, a: 0.94}
+--- !u!114 &8148100148100148103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045817116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65023c46dbf699c4893743c2bc356897, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MouseDragPickupController
+  targetCamera: {fileID: 0}
+  pickupDistance: 1
+  holdDistance: 0.5
+  draggableLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  supportSurfaceLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  followSpeed: 18
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

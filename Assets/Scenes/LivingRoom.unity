@@ -1284,46 +1284,6 @@ Transform:
   - {fileID: 488961291}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8148100148100148102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2045817116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c27f18a5e3149d6b0f2a8c1e4d7b395, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactDistance: 10
-  panelSize: {x: 760, y: 460}
-  imageSize: {x: 240, y: 240}
-  videoSize: {x: 240, y: 135}
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.45}
-  panelColor: {r: 0.1, g: 0.09, b: 0.08, a: 0.94}
---- !u!114 &8148100148100148103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2045817116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65023c46dbf699c4893743c2bc356897, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MouseDragPickupController
-  targetCamera: {fileID: 0}
-  pickupDistance: 1
-  holdDistance: 0.5
-  draggableLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  supportSurfaceLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  followSpeed: 18
 --- !u!1 &2109000000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1368,10 +1328,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e047fa04a7f0a43418947091d50515d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
-  backgroundMusic: {fileID: 8300000, guid: 53d3b09c1cdc96046bb46bd6d8a41d7a, type: 3}
-  volume: 0.6
+  backgroundMusic: {fileID: 8300000, guid: 9d5b1dba5246f6442a1a7a39c446a106, type: 3}
+  volume: 0.2
   playOnAwake: 1
   loop: 1
+--- !u!114 &8148100148100148102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045817116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c27f18a5e3149d6b0f2a8c1e4d7b395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactDistance: 10
+  panelSize: {x: 760, y: 460}
+  imageSize: {x: 240, y: 240}
+  videoSize: {x: 240, y: 135}
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.45}
+  panelColor: {r: 0.1, g: 0.09, b: 0.08, a: 0.94}
+--- !u!114 &8148100148100148103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045817116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65023c46dbf699c4893743c2bc356897, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MouseDragPickupController
+  targetCamera: {fileID: 0}
+  pickupDistance: 1
+  holdDistance: 0.5
+  draggableLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  supportSurfaceLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  followSpeed: 18
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

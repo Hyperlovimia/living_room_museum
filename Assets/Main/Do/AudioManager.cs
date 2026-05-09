@@ -1,35 +1,134 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[DisallowMultipleComponent]
+[AddComponentMenu("Audio/BGM Manager")]
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance;
-    private AudioSource BgAudio;
+    public static AudioManager Instance { get; private set; }
+
+    [SerializeField] private AudioClip backgroundMusic;
+    [SerializeField] [Range(0f, 1f)] private float volume = 0.6f;
+    [SerializeField] private bool playOnAwake = true;
+    [SerializeField] private bool loop = true;
+
+    private AudioSource _backgroundAudio;
 
     private void Awake()
     {
-        if (AudioManager.Instance == null)
+        if (Instance == null)
         {
-            AudioManager.Instance = this;
-            DontDestroyOnLoad(this.gameObject);
-            BgAudio = transform.GetComponent<AudioSource>();
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            InitializeAudioSource();
+
+            if (playOnAwake)
+            {
+                PlayBg();
+            }
         }
         else
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 
     public void PlayBg()
     {
-        BgAudio?.Play();
+        if (_backgroundAudio == null)
+        {
+            InitializeAudioSource();
+        }
+
+        if (_backgroundAudio == null)
+        {
+            return;
+        }
+
+        if (backgroundMusic != null && _backgroundAudio.clip != backgroundMusic)
+        {
+            _backgroundAudio.clip = backgroundMusic;
+        }
+
+        if (_backgroundAudio.clip == null)
+        {
+            return;
+        }
+
+        ApplyAudioSettings();
+
+        if (!_backgroundAudio.isPlaying)
+        {
+            _backgroundAudio.Play();
+        }
     }
 
     public void PauseBg()
     {
-        BgAudio?.Pause();
+        _backgroundAudio?.Pause();
     }
-    
+
+    public void StopBg()
+    {
+        _backgroundAudio?.Stop();
+    }
+
+    public void SetBackgroundMusic(AudioClip clip, bool playImmediately = true)
+    {
+        backgroundMusic = clip;
+
+        if (_backgroundAudio == null)
+        {
+            InitializeAudioSource();
+        }
+
+        if (_backgroundAudio == null)
+        {
+            return;
+        }
+
+        _backgroundAudio.clip = backgroundMusic;
+        ApplyAudioSettings();
+
+        if (playImmediately)
+        {
+            _backgroundAudio.Play();
+        }
+    }
+
+    private void OnValidate()
+    {
+        var audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            return;
+        }
+
+        _backgroundAudio = audioSource;
+        ApplyAudioSettings();
+    }
+
+    private void InitializeAudioSource()
+    {
+        _backgroundAudio = GetComponent<AudioSource>();
+        if (_backgroundAudio == null)
+        {
+            _backgroundAudio = gameObject.AddComponent<AudioSource>();
+        }
+
+        _backgroundAudio.clip = backgroundMusic;
+        ApplyAudioSettings();
+    }
+
+    private void ApplyAudioSettings()
+    {
+        if (_backgroundAudio == null)
+        {
+            return;
+        }
+
+        _backgroundAudio.playOnAwake = false;
+        _backgroundAudio.loop = loop;
+        _backgroundAudio.volume = volume;
+        _backgroundAudio.spatialBlend = 0f;
+    }
 }

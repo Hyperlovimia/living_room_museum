@@ -74,8 +74,6 @@ public class AudioManager : MonoBehaviour
 
     public void SetBackgroundMusic(AudioClip clip, bool playImmediately = true)
     {
-        backgroundMusic = clip;
-
         if (_backgroundAudio == null)
         {
             InitializeAudioSource();
@@ -86,12 +84,24 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
+        bool isSameClip = _backgroundAudio.clip == clip;
+        backgroundMusic = clip;
         _backgroundAudio.clip = backgroundMusic;
         ApplyAudioSettings();
 
         if (playImmediately)
         {
-            _backgroundAudio.Play();
+            if (isSameClip)
+            {
+                if (!_backgroundAudio.isPlaying)
+                {
+                    _backgroundAudio.Play();
+                }
+            }
+            else
+            {
+                _backgroundAudio.Play();
+            }
         }
     }
 

@@ -15,6 +15,10 @@ public class LightingModeMenuController : DoBase
     [SerializeField] private Vector2 buttonSize = new Vector2(220f, 38f);
     [SerializeField] private Color overlayColor = new Color(0f, 0f, 0f, 0.45f);
     [SerializeField] private Color panelColor = new Color(0.1f, 0.09f, 0.08f, 0.94f);
+    [Header("Background Music")]
+    [SerializeField] private AudioClip morningReadingMusic;
+    [SerializeField] private AudioClip guestModeMusic;
+    [SerializeField] private AudioClip teaModeMusic;
 
     private readonly System.Collections.Generic.List<ActiveDo> activeLights = new System.Collections.Generic.List<ActiveDo>();
 
@@ -130,7 +134,38 @@ public class LightingModeMenuController : DoBase
             activeDo.ApplyLightingMode(lightingMode);
         }
 
+        ApplyBackgroundMusic(lightingMode);
         UpdateButtonVisuals();
+    }
+
+    private void ApplyBackgroundMusic(ActiveDo.LightingMode lightingMode)
+    {
+        AudioManager audioManager = AudioManager.Instance;
+        if (audioManager == null)
+        {
+            return;
+        }
+
+        AudioClip musicClip = GetMusicClipForMode(lightingMode);
+        if (musicClip == null)
+        {
+            return;
+        }
+
+        audioManager.SetBackgroundMusic(musicClip);
+    }
+
+    private AudioClip GetMusicClipForMode(ActiveDo.LightingMode lightingMode)
+    {
+        switch (lightingMode)
+        {
+            case ActiveDo.LightingMode.MorningReading:
+                return morningReadingMusic;
+            case ActiveDo.LightingMode.GuestMode:
+                return guestModeMusic;
+            default:
+                return teaModeMusic;
+        }
     }
 
     private void CacheActiveLights()

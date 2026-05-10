@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: cc0d11bdb68bce44c9607ac6d59dba23, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -536,13 +536,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.597068, y: -0.6828026, z: -0.07997179, w: 0.41339442}
+  m_LocalPosition: {x: 3.99, y: 3, z: 2.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 22.609, y: -134.359, z: -72.719}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1329,10 +1329,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8148100148100148101, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
-      propertyPath: narrationClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 53d3b09c1cdc96046bb46bd6d8a41d7a, type: 3}
-    - target: {fileID: 8148100148100148101, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
       propertyPath: displayTexture
       value: 
       objectReference: {fileID: 2800000, guid: 61ffdcaac49027c4a8023cbd8045dbe5, type: 3}
@@ -1398,6 +1394,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4381937586823502344, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 790860030}
+    - targetCorrespondingSourceObject: {fileID: 8648505056208776888, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1537176685}
     - targetCorrespondingSourceObject: {fileID: 6359806166784926127, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1337773764}
@@ -1635,6 +1634,30 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -6222024095088562866, guid: f992266e0743eff49bfa8d7dbc5abbad, type: 3}
+--- !u!1 &1537176683 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8648505056208776888, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
+  m_PrefabInstance: {fileID: 1337773755}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1537176685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1537176683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc6a29b4dce44620a7a92a5cb9c2d4e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExhibitInfo
+  exhibitTitle: "\u73AB\u7470\u6905"
+  description: "\u73AB\u7470\u6905\u662F\u4E2D\u56FD\u4F20\u7EDF\u5BB6\u5177\u4E2D\u7684\u6276\u624B\u6905\u7C7B\u578B\uFF0C\u76DB\u884C\u4E8E\u660E\u4EE3\uFF0C\u4EE5\u9EC4\u82B1\u68A8\u6728\u3001\u94C1\u68A8\u6728\u4E3A\u4E3B\u8981\u6750\u8D28\u3002\u5176\u9020\u578B\u5C0F\u5DE7\uFF0C\u9760\u80CC\u4E0E\u6276\u624B\u7B49\u9AD8\u4E14\u4F4E\u77EE\uFF0C\u9002\u5408\u9760\u7A97\u6446\u653E\u3002\u540D\u79F0\u6765\u6E90\u5B58\u5728\u201C\u73AB\u7470\u201D\u659C\u7389\u65C1\u9690\u55BB\u6587\u4EBA\u7389\u5FB7\u3001\u4EE5\u53CA\u201C\u7F8E\u9B3C\u6905\u201D\u65B9\u8A00\u8C10\u97F3\u4E24\u79CD\u8003\u636E"
+  displayTexture: {fileID: 2800000, guid: c18ba48b4b23ad645aa1e85181780cbe, type: 3}
+  narrationClip: {fileID: 0}
+  exhibitVideo: {fileID: 0}
+  loopVideo: 1
+  autoCreateCollider: 1
 --- !u!114 &1986058153
 MonoBehaviour:
   m_ObjectHideFlags: 0

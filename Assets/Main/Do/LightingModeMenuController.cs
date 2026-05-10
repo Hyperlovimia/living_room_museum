@@ -19,6 +19,10 @@ public class LightingModeMenuController : DoBase
     [SerializeField] private AudioClip morningReadingMusic;
     [SerializeField] private AudioClip guestModeMusic;
     [SerializeField] private AudioClip teaModeMusic;
+    [Header("Skybox Materials")]
+    [SerializeField] private Material morningReadingSkybox;
+    [SerializeField] private Material guestModeSkybox;
+    [SerializeField] private Material teaModeSkybox;
 
     private readonly System.Collections.Generic.List<ActiveDo> activeLights = new System.Collections.Generic.List<ActiveDo>();
 
@@ -135,6 +139,7 @@ public class LightingModeMenuController : DoBase
         }
 
         ApplyBackgroundMusic(lightingMode);
+        ApplySkybox(lightingMode);
         UpdateButtonVisuals();
     }
 
@@ -165,6 +170,31 @@ public class LightingModeMenuController : DoBase
                 return guestModeMusic;
             default:
                 return teaModeMusic;
+        }
+    }
+
+    private void ApplySkybox(ActiveDo.LightingMode lightingMode)
+    {
+        Material skyboxMaterial = GetSkyboxMaterialForMode(lightingMode);
+        if (skyboxMaterial == null || RenderSettings.skybox == skyboxMaterial)
+        {
+            return;
+        }
+
+        RenderSettings.skybox = skyboxMaterial;
+        DynamicGI.UpdateEnvironment();
+    }
+
+    private Material GetSkyboxMaterialForMode(ActiveDo.LightingMode lightingMode)
+    {
+        switch (lightingMode)
+        {
+            case ActiveDo.LightingMode.MorningReading:
+                return morningReadingSkybox;
+            case ActiveDo.LightingMode.GuestMode:
+                return guestModeSkybox;
+            default:
+                return teaModeSkybox;
         }
     }
 

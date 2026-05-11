@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: cc0d11bdb68bce44c9607ac6d59dba23, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: fa0528b635e030d4aad422d1828d0320, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -284,6 +284,11 @@ Transform:
 --- !u!4 &53321508 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8997996947095583982, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+  m_PrefabInstance: {fileID: 53321504}
+  m_PrefabAsset: {fileID: 0}
+--- !u!143 &53321509 stripped
+CharacterController:
+  m_CorrespondingSourceObject: {fileID: 8616685848737228382, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
   m_PrefabInstance: {fileID: 53321504}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &84809891 stripped
@@ -789,6 +794,39 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &416135112
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 416135113}
+  m_Layer: 0
+  m_Name: "\u589E\u8865"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &416135113
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 416135112}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -17.5697, y: 1.961, z: -8.35}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 927161421}
+  - {fileID: 1416626491}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &464808305 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4760238974887059524, guid: 0c1061645b79d8e4e8fd2516d0b5b04e, type: 3}
@@ -1658,12 +1696,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 927161417}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.5697, y: 1.961, z: 2.2}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 10.55}
   m_LocalScale: {x: 2.4991238, y: 3.9342802, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 416135113}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1026207590 stripped
 GameObject:
@@ -2806,12 +2844,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1416626487}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.5697, y: 1.961, z: -8.35}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2.4991238, y: 3.9342802, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 416135113}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1420360516 stripped
 GameObject:
@@ -3148,6 +3186,7 @@ GameObject:
   - component: {fileID: 2045817117}
   - component: {fileID: 8148100148100148102}
   - component: {fileID: 8148100148100148103}
+  - component: {fileID: 8148100148100148104}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Untagged
@@ -3371,6 +3410,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   followSpeed: 18
+--- !u!114 &8148100148100148104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045817116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6a8f6b3f4f640669b4c9c761a8c4c21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementBounds
+  target: {fileID: 53321508}
+  targetController: {fileID: 53321509}
+  boundsCenter: {x: -9.45, y: 2, z: -3.05}
+  boundsSize: {x: 18.9, y: 4, z: 10.6}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3380,5 +3435,4 @@ SceneRoots:
   - {fileID: 1337773755}
   - {fileID: 2045817117}
   - {fileID: 2109000001}
-  - {fileID: 927161421}
-  - {fileID: 1416626491}
+  - {fileID: 416135113}

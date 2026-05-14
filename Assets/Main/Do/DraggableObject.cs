@@ -8,10 +8,15 @@ public class DraggableObject : MonoBehaviour
     [SerializeField] private float releaseSurfaceOffset = 0.005f;
     [SerializeField] private float landingRayStartHeight = 1f;
     [SerializeField] private float landingRayDistance = 5f;
+    [SerializeField] private float thrownSettleSpeed = 0.35f;
+    [SerializeField] private float thrownSettleAngularSpeed = 1.5f;
+    [SerializeField, Range(0f, 1f)] private float supportNormalThreshold = 0.35f;
 
     private Collider[] _colliders;
     private Rigidbody _rigidbody;
     private float _bottomOffset;
+    private bool _shouldSettleAfterThrow;
+    private LayerMask _throwSupportLayers;
 
     public float BottomOffset => _bottomOffset;
     public float ReleaseSurfaceOffset => releaseSurfaceOffset;
@@ -32,12 +37,16 @@ public class DraggableObject : MonoBehaviour
         releaseSurfaceOffset = Mathf.Max(0f, releaseSurfaceOffset);
         landingRayStartHeight = Mathf.Max(0.1f, landingRayStartHeight);
         landingRayDistance = Mathf.Max(0.1f, landingRayDistance);
+        thrownSettleSpeed = Mathf.Max(0.01f, thrownSettleSpeed);
+        thrownSettleAngularSpeed = Mathf.Max(0.01f, thrownSettleAngularSpeed);
+        supportNormalThreshold = Mathf.Clamp01(supportNormalThreshold);
     }
 
     public void BeginDrag()
     {
         EnsureRigidbody();
         RecalculateBottomOffset();
+        _shouldSettleAfterThrow = false;
         StopPhysics();
     }
 
@@ -52,6 +61,27 @@ public class DraggableObject : MonoBehaviour
         }
 
         transform.position = position;
+    }
+
+    public void Throw(Vector3 direction, float force, LayerMask supportLayers)
+    {
+        EnsureRigidbody();
+        RecalculateBottomOffset();
+        RefreshColliders();
+        SetCollidersEnabled(true);
+
+        _rigidbody.linearVelocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
+        _rigidbody.useGravity = true;
+        _rigidbody.isKinematic = false;
+        _rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        _rigidbody.WakeUp();
+
+        _throwSupportLayers = supportLayers;
+        _shouldSettleAfterThrow = true;
+
+        var throwDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : transform.forward;
+        _rigidbody.AddForce(throwDirection * Mathf.Max(0f, force), ForceMode.Impulse);
     }
 
     public bool TryLandBelow(LayerMask supportLayers)
@@ -92,6 +122,16 @@ public class DraggableObject : MonoBehaviour
         SetCollidersEnabled(true);
         StopPhysics();
         return foundGround;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        TrySettleAfterThrow(collision);
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        TrySettleAfterThrow(collision);
     }
 
     private void SetCollidersEnabled(bool enabled)
@@ -178,10 +218,55 @@ public class DraggableObject : MonoBehaviour
         _rigidbody.angularVelocity = Vector3.zero;
         _rigidbody.useGravity = false;
         _rigidbody.isKinematic = true;
+        _rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        _shouldSettleAfterThrow = false;
     }
 
     private void RefreshColliders()
     {
         _colliders = GetComponentsInChildren<Collider>();
+    }
+
+    private void TrySettleAfterThrow(Collision collision)
+    {
+        if (!_shouldSettleAfterThrow || _rigidbody == null || _rigidbody.isKinematic)
+        {
+            return;
+        }
+
+        if (!IsLayerInMask(collision.collider.gameObject.layer, _throwSupportLayers) || !HasSupportContact(collision))
+        {
+            return;
+        }
+
+        if (_rigidbody.linearVelocity.sqrMagnitude > thrownSettleSpeed * thrownSettleSpeed)
+        {
+            return;
+        }
+
+        if (_rigidbody.angularVelocity.sqrMagnitude > thrownSettleAngularSpeed * thrownSettleAngularSpeed)
+        {
+            return;
+        }
+
+        TryLandBelow(_throwSupportLayers);
+    }
+
+    private bool HasSupportContact(Collision collision)
+    {
+        for (var i = 0; i < collision.contactCount; i++)
+        {
+            if (collision.GetContact(i).normal.y >= supportNormalThreshold)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsLayerInMask(int layer, LayerMask mask)
+    {
+        return (mask.value & (1 << layer)) != 0;
     }
 }

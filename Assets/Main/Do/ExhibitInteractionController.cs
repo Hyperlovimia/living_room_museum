@@ -35,6 +35,9 @@ public class ExhibitInteractionController : MonoBehaviour
     private Text _videoHintText;
 
     private bool _isPanelOpen;
+    private bool _scriptedVideoActive;
+    private float _scriptedVideoStartedAt;
+    private string _scriptedVideoCaption;
 
     private void Awake()
     {
@@ -93,6 +96,8 @@ public class ExhibitInteractionController : MonoBehaviour
     {
         if (_isPanelOpen)
         {
+            UpdateScriptedVideo();
+
             if (WasClosePressed())
             {
                 ClosePanel();
@@ -217,7 +222,8 @@ public class ExhibitInteractionController : MonoBehaviour
         StopVideoPlayback();
 
         var videoClip = exhibitInfo.ExhibitVideo;
-        var hasVideo = videoClip != null;
+        var hasScriptedVideo = exhibitInfo.ScriptedVideoEnabled;
+        var hasVideo = videoClip != null || hasScriptedVideo;
 
         if (_videoFrameRoot != null)
         {
@@ -240,6 +246,12 @@ public class ExhibitInteractionController : MonoBehaviour
             return;
         }
 
+        if (videoClip == null && hasScriptedVideo)
+        {
+            StartScriptedVideo(exhibitInfo);
+            return;
+        }
+
         EnsureVideoTexture();
         _videoPlayer.Stop();
         _videoPlayer.clip = videoClip;
@@ -253,6 +265,42 @@ public class ExhibitInteractionController : MonoBehaviour
         }
 
         _videoPlayer.Prepare();
+    }
+
+    private void StartScriptedVideo(ExhibitInfo exhibitInfo)
+    {
+        _scriptedVideoActive = true;
+        _scriptedVideoStartedAt = Time.time;
+        _scriptedVideoCaption = string.IsNullOrWhiteSpace(exhibitInfo.ScriptedVideoCaption)
+            ? "视频讲解播放中..."
+            : exhibitInfo.ScriptedVideoCaption;
+
+        if (_videoImage != null)
+        {
+            _videoImage.texture = null;
+            _videoImage.color = new Color(0.08f, 0.12f, 0.14f, 0.96f);
+        }
+
+        if (_videoHintText != null)
+        {
+            _videoHintText.text = _scriptedVideoCaption;
+            _videoHintText.fontSize = 18;
+            _videoHintText.fontStyle = FontStyle.Normal;
+            _videoHintText.alignment = TextAnchor.MiddleCenter;
+        }
+    }
+
+    private void UpdateScriptedVideo()
+    {
+        if (!_scriptedVideoActive || _videoHintText == null)
+        {
+            return;
+        }
+
+        var progress = Mathf.PingPong((Time.time - _scriptedVideoStartedAt) * 0.45f, 1f);
+        var alpha = Mathf.Lerp(0.65f, 1f, progress);
+        _videoHintText.color = new Color(1f, 0.94f, 0.78f, alpha);
+        _videoHintText.text = _scriptedVideoCaption + "\n\n● ● ●";
     }
 
     private void EnsureVideoTexture()
@@ -280,6 +328,8 @@ public class ExhibitInteractionController : MonoBehaviour
 
     private void StopVideoPlayback()
     {
+        _scriptedVideoActive = false;
+
         if (_videoPlayer != null)
         {
             _videoPlayer.Stop();

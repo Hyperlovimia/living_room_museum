@@ -11,6 +11,9 @@ public class ExhibitInfo : MonoBehaviour
     [SerializeField] private AudioClip narrationClip;
     [SerializeField] private VideoClip exhibitVideo;
     [SerializeField] private bool loopVideo = true;
+    [SerializeField] private bool scriptedVideoEnabled;
+    [TextArea(2, 6)]
+    [SerializeField] private string scriptedVideoCaption;
     [SerializeField] private bool autoCreateCollider = true;
 
     private Texture _resolvedFallbackTexture;
@@ -22,6 +25,28 @@ public class ExhibitInfo : MonoBehaviour
     public AudioClip NarrationClip => narrationClip;
     public VideoClip ExhibitVideo => exhibitVideo;
     public bool LoopVideo => loopVideo;
+    public bool ScriptedVideoEnabled => scriptedVideoEnabled;
+    public string ScriptedVideoCaption => scriptedVideoCaption;
+
+    public void Configure(
+        string title,
+        string body,
+        Texture texture,
+        AudioClip audioClip,
+        VideoClip videoClip = null,
+        bool loop = true,
+        bool scriptedVideo = false,
+        string scriptedCaption = null)
+    {
+        exhibitTitle = title;
+        description = body;
+        displayTexture = texture;
+        narrationClip = audioClip;
+        exhibitVideo = videoClip;
+        loopVideo = loop;
+        scriptedVideoEnabled = scriptedVideo;
+        scriptedVideoCaption = scriptedCaption;
+    }
 
     private void Awake()
     {

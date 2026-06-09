@@ -2,6 +2,7 @@ using StarterAssets;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit.UI;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -29,6 +30,8 @@ public class LightingModeMenuController : DoBase
     private Camera mainCamera;
     private FirstPersonController firstPersonController;
     private StarterAssetsInputs starterAssetsInputs;
+    private XROriginPlayerAdapter xrPlayer;
+    private Canvas uiCanvas;
     private GameObject overlayRoot;
     private Button morningReadingButton;
     private Button guestModeButton;
@@ -52,6 +55,7 @@ public class LightingModeMenuController : DoBase
 
         firstPersonController = FindAnyObjectByType<FirstPersonController>();
         starterAssetsInputs = FindAnyObjectByType<StarterAssetsInputs>();
+        xrPlayer = XROriginPlayerAdapter.Resolve();
 
         BuildUi();
         CacheActiveLights();
@@ -66,9 +70,9 @@ public class LightingModeMenuController : DoBase
         }
     }
 
-    private void OnMouseDown()
+    protected override void OnSelected(XrSelectContext context)
     {
-        if (isPanelOpen || IsPointerOverUI())
+        if (isPanelOpen)
         {
             return;
         }
@@ -80,6 +84,16 @@ public class LightingModeMenuController : DoBase
     {
         CacheActiveLights();
         isPanelOpen = true;
+
+        if (xrPlayer == null)
+        {
+            xrPlayer = XROriginPlayerAdapter.Resolve();
+        }
+
+        if (xrPlayer != null)
+        {
+            xrPlayer.SetMovementEnabled(false);
+        }
 
         if (firstPersonController != null)
         {
@@ -103,6 +117,16 @@ public class LightingModeMenuController : DoBase
     private void ClosePanel()
     {
         isPanelOpen = false;
+
+        if (xrPlayer == null)
+        {
+            xrPlayer = XROriginPlayerAdapter.Resolve();
+        }
+
+        if (xrPlayer != null)
+        {
+            xrPlayer.SetMovementEnabled(true);
+        }
 
         if (firstPersonController != null)
         {
@@ -218,6 +242,11 @@ public class LightingModeMenuController : DoBase
         {
             overlayRoot.SetActive(visible);
         }
+
+        if (visible && uiCanvas != null)
+        {
+            XrWorldPanelPresenter.GetOrCreate().PlaceInFront(uiCanvas);
+        }
     }
 
     private void BuildUi()
@@ -226,18 +255,9 @@ public class LightingModeMenuController : DoBase
 
         menuFont = LoadFont();
 
-        GameObject canvasRoot = new GameObject("LightingModeCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-        canvasRoot.transform.SetParent(transform, false);
-
-        Canvas canvas = canvasRoot.GetComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 900;
-
-        CanvasScaler canvasScaler = canvasRoot.GetComponent<CanvasScaler>();
-        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        canvasScaler.referenceResolution = new Vector2(1920f, 1080f);
-        canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-        canvasScaler.matchWidthOrHeight = 0.5f;
+        uiCanvas = XrWorldPanelPresenter.GetOrCreate()
+            .CreateCameraPanelCanvas("LightingModeCanvas", transform, 900, new Vector2(1920f, 1080f));
+        GameObject canvasRoot = uiCanvas.gameObject;
 
         overlayRoot = CreateUiNode("Overlay", canvasRoot.transform);
         RectTransform overlayRect = overlayRoot.GetComponent<RectTransform>();
@@ -256,6 +276,7 @@ public class LightingModeMenuController : DoBase
 
         Image panelImage = panel.AddComponent<Image>();
         panelImage.color = panelColor;
+        XrWorldPanelPresenter.AddCloseButton(panel.transform, menuFont, ClosePanel);
 
         VerticalLayoutGroup layoutGroup = panel.AddComponent<VerticalLayoutGroup>();
         layoutGroup.padding = new RectOffset(24, 24, 24, 24);
@@ -270,20 +291,33 @@ public class LightingModeMenuController : DoBase
         morningReadingButton = CreateButton(panel.transform, "MorningReadingButton", "晨读模式", () => ApplyMode(ActiveDo.LightingMode.MorningReading));
         guestModeButton = CreateButton(panel.transform, "GuestModeButton", "会客模式", () => ApplyMode(ActiveDo.LightingMode.GuestMode));
         teaModeButton = CreateButton(panel.transform, "TeaModeButton", "品茶模式", () => ApplyMode(ActiveDo.LightingMode.TeaMode));
-        CreateLabel(panel.transform, "Hint", "Esc 关闭菜单", 18, new Color(1f, 1f, 1f, 0.7f), FontStyle.Italic, 260f, 26f);
+        CreateLabel(panel.transform, "Hint", "选择 X 或 Esc 关闭菜单", 18, new Color(1f, 1f, 1f, 0.7f), FontStyle.Italic, 260f, 26f);
     }
 
     private void EnsureEventSystem()
     {
+        GameObject eventSystemObject;
         if (EventSystem.current != null)
         {
-            return;
+            eventSystemObject = EventSystem.current.gameObject;
+        }
+        else
+        {
+            eventSystemObject = new GameObject("LightingModeEventSystem");
+            eventSystemObject.transform.SetParent(transform, false);
+            eventSystemObject.AddComponent<EventSystem>();
         }
 
-        GameObject eventSystemObject = new GameObject("LightingModeEventSystem");
-        eventSystemObject.transform.SetParent(transform, false);
-        eventSystemObject.AddComponent<EventSystem>();
-        eventSystemObject.AddComponent<StandaloneInputModule>();
+        var standaloneInputModule = eventSystemObject.GetComponent<StandaloneInputModule>();
+        if (standaloneInputModule != null)
+        {
+            standaloneInputModule.enabled = false;
+        }
+
+        if (eventSystemObject.GetComponent<XRUIInputModule>() == null)
+        {
+            eventSystemObject.AddComponent<XRUIInputModule>();
+        }
     }
 
     private Button CreateButton(Transform parent, string objectName, string buttonText, UnityEngine.Events.UnityAction onClick)

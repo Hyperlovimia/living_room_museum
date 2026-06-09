@@ -22,9 +22,8 @@ public class MoveDo : DoBase
         _startPos = Target.localPosition;
     }
 
-    private void OnMouseDown()
+    protected override void OnSelected(XrSelectContext context)
     {
-        if (IsPointerOverUI()) return;
         _isMove = !_isMove;
         var pos = _isMove
             ? new Vector3(IsX ? EndPos.x : _startPos.x, IsY ? EndPos.y : _startPos.y, IsZ ? EndPos.z : _startPos.z)

@@ -18,9 +18,8 @@ public class Switch : DoBase
         RenderSettings.ambientIntensity = IsActive ? OnValue : OffValue;
     }
 
-    private void OnMouseDown()
+    protected override void OnSelected(XrSelectContext context)
     {
-        if (IsPointerOverUI()) return;
         IsActive = !IsActive;
         RenderSettings.ambientIntensity = IsActive ? OnValue : OffValue;
     }

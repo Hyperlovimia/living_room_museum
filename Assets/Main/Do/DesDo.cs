@@ -11,13 +11,10 @@ public class DesDo : DoBase
     public string Content;
     public Texture MTexture;
 
-    private void OnMouseDown()
+    protected override void OnSelected(XrSelectContext context)
     {
-        if (!IsPointerOverUI())
-        {
-            var texture = GetComponent<MeshRenderer>().material.mainTexture;
-            ModuleManager.Instance.EnterModule(ModuleConfig.MODULE_ICONDES, false, false, Title, Content,
-                MTexture == null ? texture : MTexture);
-        }
+        var texture = GetComponent<MeshRenderer>().material.mainTexture;
+        ModuleManager.Instance.EnterModule(ModuleConfig.MODULE_ICONDES, false, false, Title, Content,
+            MTexture == null ? texture : MTexture);
     }
 }

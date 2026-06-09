@@ -20,9 +20,8 @@ public class VideoPlayDo : DoBase
         _video.Pause();
     }
 
-    private void OnMouseDown()
+    protected override void OnSelected(XrSelectContext context)
     {
-        if(IsPointerOverUI()) return;
         if (!_video.isPlaying)
         {
             GameObject.FindObjectsOfType<VideoPlayDo>().ToList().ForEach(m => m.Pause());

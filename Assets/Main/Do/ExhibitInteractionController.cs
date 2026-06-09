@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 #endif
 
 [DisallowMultipleComponent]
-public class ExhibitInteractionController : MonoBehaviour
+public class ExhibitInteractionController : MonoBehaviour, IXrSelectable
 {
     [SerializeField] private float interactDistance = 10f;
     [SerializeField] private Vector2 panelSize = new Vector2(760f, 460f);
@@ -23,7 +23,9 @@ public class ExhibitInteractionController : MonoBehaviour
     private AudioSource _videoAudioSource;
     private VideoPlayer _videoPlayer;
     private RenderTexture _videoRenderTexture;
+    private XROriginPlayerAdapter _xrPlayer;
 
+    private Canvas _uiCanvas;
     private GameObject _overlayRoot;
     private GameObject _crosshairRoot;
     private GameObject _videoFrameRoot;
@@ -46,6 +48,7 @@ public class ExhibitInteractionController : MonoBehaviour
         {
             _mainCamera = FindFirstObjectByType<Camera>();
         }
+        _xrPlayer = XROriginPlayerAdapter.Resolve();
 
         _firstPersonController = GetComponentInChildren<FirstPersonController>(true);
         _starterAssetsInputs = GetComponentInChildren<StarterAssetsInputs>(true);
@@ -143,15 +146,40 @@ public class ExhibitInteractionController : MonoBehaviour
         OpenPanel(exhibitInfo);
     }
 
-    private void OpenPanel(ExhibitInfo exhibitInfo)
+    public void Select(XrSelectContext context)
     {
+        var target = context.Target != null ? context.Target : gameObject;
+        var exhibitInfo = target.GetComponentInParent<ExhibitInfo>();
+        if (exhibitInfo != null)
+        {
+            OpenPanel(exhibitInfo);
+        }
+    }
+
+    public void OpenPanel(ExhibitInfo exhibitInfo)
+    {
+        if (exhibitInfo == null)
+        {
+            return;
+        }
+
         _isPanelOpen = true;
 
         _titleText.text = exhibitInfo.ExhibitTitle;
         _descriptionText.text = exhibitInfo.Description;
         _displayImage.texture = exhibitInfo.DisplayTexture;
         _displayImage.color = _displayImage.texture == null ? new Color(1f, 1f, 1f, 0f) : Color.white;
-        _hintText.text = "Left Click or Esc to close";
+        _hintText.text = "选择右上角 X 或按 Esc 关闭";
+
+        if (_xrPlayer == null)
+        {
+            _xrPlayer = XROriginPlayerAdapter.Resolve();
+        }
+
+        if (_xrPlayer != null)
+        {
+            _xrPlayer.SetMovementEnabled(false);
+        }
 
         if (_firstPersonController != null)
         {
@@ -188,6 +216,16 @@ public class ExhibitInteractionController : MonoBehaviour
         _narrationAudioSource.clip = null;
         StopVideoPlayback();
 
+        if (_xrPlayer == null)
+        {
+            _xrPlayer = XROriginPlayerAdapter.Resolve();
+        }
+
+        if (_xrPlayer != null)
+        {
+            _xrPlayer.SetMovementEnabled(true);
+        }
+
         if (_firstPersonController != null)
         {
             _firstPersonController.enabled = true;
@@ -213,7 +251,12 @@ public class ExhibitInteractionController : MonoBehaviour
 
         if (_crosshairRoot != null)
         {
-            _crosshairRoot.SetActive(!visible);
+            _crosshairRoot.SetActive(false);
+        }
+
+        if (visible && _uiCanvas != null)
+        {
+            XrWorldPanelPresenter.GetOrCreate().PlaceInFront(_uiCanvas);
         }
     }
 
@@ -384,18 +427,9 @@ public class ExhibitInteractionController : MonoBehaviour
     {
         var font = LoadFont();
 
-        var canvasRoot = new GameObject("ExhibitInfoCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-        canvasRoot.transform.SetParent(transform, false);
-
-        var canvas = canvasRoot.GetComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 1000;
-
-        var canvasScaler = canvasRoot.GetComponent<CanvasScaler>();
-        canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        canvasScaler.referenceResolution = new Vector2(1920f, 1080f);
-        canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-        canvasScaler.matchWidthOrHeight = 0.5f;
+        _uiCanvas = XrWorldPanelPresenter.GetOrCreate()
+            .CreateCameraPanelCanvas("ExhibitInfoCanvas", transform, 1000, new Vector2(1920f, 1080f));
+        var canvasRoot = _uiCanvas.gameObject;
 
         _overlayRoot = CreateUiNode("Overlay", canvasRoot.transform);
         var overlayRect = _overlayRoot.GetComponent<RectTransform>();
@@ -414,6 +448,7 @@ public class ExhibitInteractionController : MonoBehaviour
 
         var panelImage = panel.AddComponent<Image>();
         panelImage.color = panelColor;
+        XrWorldPanelPresenter.AddCloseButton(panel.transform, font, ClosePanel);
 
         _titleText = CreateText("Title", panel.transform, font, 32, FontStyle.Bold, TextAnchor.UpperLeft);
         var titleRect = _titleText.rectTransform;

@@ -52,6 +52,7 @@ public class SpawnRoomController : MonoBehaviour
     private StarterAssetsInputs _starterAssetsInputs;
     private ExhibitInteractionController _exhibitInteractionController;
     private PlayerMovementBounds _playerMovementBounds;
+    private XROriginPlayerAdapter _xrPlayer;
 
     private Canvas _uiCanvas;
     private GameObject _overlayRoot;
@@ -76,6 +77,7 @@ public class SpawnRoomController : MonoBehaviour
     private void Awake()
     {
         _mainCamera = Camera.main != null ? Camera.main : FindFirstObjectByType<Camera>();
+        _xrPlayer = XROriginPlayerAdapter.Resolve();
         if (playerController != null)
         {
             _firstPersonController = playerController.GetComponentInChildren<FirstPersonController>(true);
@@ -166,10 +168,16 @@ public class SpawnRoomController : MonoBehaviour
         if (_isFindMode && findTargetCollider != null && hit.collider == findTargetCollider)
         {
             OnFindTargetClicked();
+            return;
+        }
+
+        if (_isFindMode)
+        {
+            TryHandleFindTarget(hit.collider.GetComponentInParent<ExhibitInfo>());
         }
     }
 
-    private void HandleInteractable(SpawnInteractable interactable)
+    public void HandleInteractable(SpawnInteractable interactable)
     {
         if (interactable == teleportButton)
         {
@@ -183,7 +191,7 @@ public class SpawnRoomController : MonoBehaviour
 
     private void TeleportToStudy()
     {
-        if (playerController == null || studyTeleportTarget == null) return;
+        if (studyTeleportTarget == null) return;
         MovePlayerTo(studyTeleportTarget.position, studyTeleportTarget.rotation);
         if (_playerMovementBounds != null) _playerMovementBounds.enabled = true;
         if (_isFindMode)
@@ -198,7 +206,7 @@ public class SpawnRoomController : MonoBehaviour
     {
         if (findTargetInfo == null) return;
         _findIntroJustOpened = true;
-        OpenPanel(findTargetInfo.ExhibitTitle, findTargetInfo.Description, "左键或 Esc 关闭，开始寻找");
+        OpenPanel(findTargetInfo.ExhibitTitle, findTargetInfo.Description, "选择右上角 X 或按 Esc 关闭，开始寻找");
     }
 
     private void OpenPanel(string title, string description, string hint)
@@ -207,6 +215,16 @@ public class SpawnRoomController : MonoBehaviour
         _titleText.text = title;
         _descriptionText.text = description;
         _hintText.text = hint;
+
+        if (_xrPlayer == null)
+        {
+            _xrPlayer = XROriginPlayerAdapter.Resolve();
+        }
+
+        if (_xrPlayer != null)
+        {
+            _xrPlayer.SetMovementEnabled(false);
+        }
 
         if (_firstPersonController != null) _firstPersonController.enabled = false;
         if (_starterAssetsInputs != null)
@@ -225,6 +243,16 @@ public class SpawnRoomController : MonoBehaviour
         _isPanelOpen = false;
         var enterFind = _findIntroJustOpened && !_isFindMode;
         _findIntroJustOpened = false;
+
+        if (_xrPlayer == null)
+        {
+            _xrPlayer = XROriginPlayerAdapter.Resolve();
+        }
+
+        if (_xrPlayer != null)
+        {
+            _xrPlayer.SetMovementEnabled(true);
+        }
 
         if (_firstPersonController != null) _firstPersonController.enabled = true;
         if (_starterAssetsInputs != null)
@@ -261,11 +289,27 @@ public class SpawnRoomController : MonoBehaviour
         Invoke(nameof(TeleportBackToSpawn), 1.6f);
     }
 
+    public bool TryHandleFindTarget(ExhibitInfo exhibitInfo)
+    {
+        if (!_isFindMode || exhibitInfo == null || findTargetInfo == null)
+        {
+            return false;
+        }
+
+        if (exhibitInfo != findTargetInfo)
+        {
+            return false;
+        }
+
+        OnFindTargetClicked();
+        return true;
+    }
+
     private void TeleportBackToSpawn()
     {
         SetToastVisible(false);
         if (_playerMovementBounds != null) _playerMovementBounds.enabled = false;
-        if (playerController != null && spawnTeleportTarget != null)
+        if (spawnTeleportTarget != null)
         {
             MovePlayerTo(spawnTeleportTarget.position, spawnTeleportTarget.rotation);
         }
@@ -273,6 +317,22 @@ public class SpawnRoomController : MonoBehaviour
 
     private void MovePlayerTo(Vector3 position, Quaternion rotation)
     {
+        if (_xrPlayer == null)
+        {
+            _xrPlayer = XROriginPlayerAdapter.Resolve();
+        }
+
+        if (_xrPlayer != null)
+        {
+            _xrPlayer.MoveTo(position, rotation);
+            return;
+        }
+
+        if (playerController == null)
+        {
+            return;
+        }
+
         var characterController = playerController.GetComponentInChildren<CharacterController>(true);
         var targetTransform = characterController != null ? characterController.transform : playerController;
 
@@ -307,17 +367,20 @@ public class SpawnRoomController : MonoBehaviour
     private void SetPanelVisible(bool visible)
     {
         if (_overlayRoot != null) _overlayRoot.SetActive(visible);
-        if (_crosshairRoot != null) _crosshairRoot.SetActive(!visible);
+        if (_crosshairRoot != null) _crosshairRoot.SetActive(false);
+        if (visible && _uiCanvas != null) XrWorldPanelPresenter.GetOrCreate().PlaceInFront(_uiCanvas);
     }
 
     private void SetFindHudVisible(bool visible)
     {
         if (_findHudRoot != null) _findHudRoot.SetActive(visible);
+        if (visible && _uiCanvas != null) XrWorldPanelPresenter.GetOrCreate().PlaceInFront(_uiCanvas);
     }
 
     private void SetToastVisible(bool visible)
     {
         if (_toastRoot != null) _toastRoot.SetActive(visible);
+        if (visible && _uiCanvas != null) XrWorldPanelPresenter.GetOrCreate().PlaceInFront(_uiCanvas);
     }
 
     private void BuildWorldTexts()
@@ -374,6 +437,7 @@ public class SpawnRoomController : MonoBehaviour
 
         var canvas = canvasGo.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
+        XrWorldPanelPresenter.EnsureTrackedRaycaster(canvas);
 
         var rect = canvasGo.GetComponent<RectTransform>();
         rect.sizeDelta = new Vector2(260f, 132f);
@@ -439,6 +503,7 @@ public class SpawnRoomController : MonoBehaviour
 
         var canvas = canvasGo.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
+        XrWorldPanelPresenter.EnsureTrackedRaycaster(canvas);
 
         var rect = canvasGo.GetComponent<RectTransform>();
         rect.sizeDelta = new Vector2(width / pixelScale, height / pixelScale);
@@ -549,16 +614,9 @@ public class SpawnRoomController : MonoBehaviour
     {
         var font = LoadFont();
 
-        var canvasGo = new GameObject("SpawnRoomCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-        canvasGo.transform.SetParent(transform, false);
-        _uiCanvas = canvasGo.GetComponent<Canvas>();
-        _uiCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        _uiCanvas.sortingOrder = 900;
-        var scaler = canvasGo.GetComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920f, 1080f);
-        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-        scaler.matchWidthOrHeight = 0.5f;
+        _uiCanvas = XrWorldPanelPresenter.GetOrCreate()
+            .CreateCameraPanelCanvas("SpawnRoomCanvas", transform, 900, new Vector2(1920f, 1080f));
+        var canvasGo = _uiCanvas.gameObject;
 
         _overlayRoot = CreateUiNode("Overlay", canvasGo.transform);
         StretchToFullScreen(_overlayRoot.GetComponent<RectTransform>());
@@ -571,6 +629,7 @@ public class SpawnRoomController : MonoBehaviour
         panelRect.sizeDelta = new Vector2(760f, 460f);
         var panelImg = panel.AddComponent<Image>();
         panelImg.color = new Color(0.1f, 0.09f, 0.08f, 0.94f);
+        XrWorldPanelPresenter.AddCloseButton(panel.transform, font, ClosePanel);
 
         _titleText = CreateText("Title", panel.transform, font, 32, FontStyle.Bold, TextAnchor.UpperLeft);
         var tr = _titleText.rectTransform;

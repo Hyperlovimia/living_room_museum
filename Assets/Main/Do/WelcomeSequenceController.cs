@@ -22,9 +22,11 @@ public class WelcomeSequenceController : MonoBehaviour
     };
 
     private GameObject _root;
+    private Canvas _uiCanvas;
     private Text _captionText;
     private Image _progressImage;
     private AudioSource _audioSource;
+    private XROriginPlayerAdapter _xrPlayer;
     private float _startedAt;
     private bool _playing;
 
@@ -36,6 +38,7 @@ public class WelcomeSequenceController : MonoBehaviour
 
     private void Awake()
     {
+        _xrPlayer = XROriginPlayerAdapter.Resolve();
         _audioSource = GetComponent<AudioSource>();
         if (_audioSource == null)
         {
@@ -106,6 +109,17 @@ public class WelcomeSequenceController : MonoBehaviour
 
     private void SetPlayerPaused(bool paused)
     {
+        if (_xrPlayer == null)
+        {
+            _xrPlayer = XROriginPlayerAdapter.Resolve();
+        }
+
+        if (_xrPlayer != null)
+        {
+            _xrPlayer.SetMovementEnabled(!paused);
+            return;
+        }
+
         if (playerController == null)
         {
             return;
@@ -132,6 +146,11 @@ public class WelcomeSequenceController : MonoBehaviour
         {
             _root.SetActive(visible);
         }
+
+        if (visible && _uiCanvas != null)
+        {
+            XrWorldPanelPresenter.GetOrCreate().PlaceInFront(_uiCanvas);
+        }
     }
 
     private void BuildUi()
@@ -142,17 +161,9 @@ public class WelcomeSequenceController : MonoBehaviour
             font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         }
 
-        var canvasGo = new GameObject("WelcomeVideoCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-        canvasGo.transform.SetParent(transform, false);
-        var canvas = canvasGo.GetComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 1200;
-
-        var scaler = canvasGo.GetComponent<CanvasScaler>();
-        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1920f, 1080f);
-        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-        scaler.matchWidthOrHeight = 0.5f;
+        _uiCanvas = XrWorldPanelPresenter.GetOrCreate()
+            .CreateCameraPanelCanvas("WelcomeVideoCanvas", transform, 1200, new Vector2(1920f, 1080f));
+        var canvasGo = _uiCanvas.gameObject;
 
         _root = new GameObject("Overlay", typeof(RectTransform), typeof(Image));
         _root.transform.SetParent(canvasGo.transform, false);
@@ -162,6 +173,7 @@ public class WelcomeSequenceController : MonoBehaviour
         rootRect.offsetMin = Vector2.zero;
         rootRect.offsetMax = Vector2.zero;
         _root.GetComponent<Image>().color = new Color(0.05f, 0.04f, 0.03f, 0.94f);
+        XrWorldPanelPresenter.AddCloseButton(_root.transform, font, Stop);
 
         var titleText = CreateText("Title", _root.transform, font, 54, FontStyle.Bold, TextAnchor.MiddleCenter);
         titleText.text = title;
@@ -174,7 +186,7 @@ public class WelcomeSequenceController : MonoBehaviour
         SetRect(_captionText.rectTransform, new Vector2(0.5f, 0.48f), new Vector2(980f, 140f));
 
         var hintText = CreateText("Hint", _root.transform, font, 20, FontStyle.Italic, TextAnchor.MiddleCenter);
-        hintText.text = "左键或 Esc 跳过";
+        hintText.text = "选择右上角 X 或按 Esc 跳过";
         hintText.color = new Color(1f, 1f, 1f, 0.72f);
         SetRect(hintText.rectTransform, new Vector2(0.5f, 0.28f), new Vector2(320f, 38f));
 

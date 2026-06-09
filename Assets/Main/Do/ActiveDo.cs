@@ -54,10 +54,8 @@ public class ActiveDo : DoBase
         Target.gameObject.SetActive(IsActive);
     }
 
-    private void OnMouseDown()
+    protected override void OnSelected(XrSelectContext context)
     {
-        if (IsPointerOverUI()) return;
-
         if (Target == null)
         {
             return;

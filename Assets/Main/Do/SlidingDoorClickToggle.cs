@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [DisallowMultipleComponent]
-public class SlidingDoorClickToggle : MonoBehaviour
+public class SlidingDoorClickToggle : MonoBehaviour, IXrSelectable
 {
     public Transform Target;
     public float ClosedZ = 0f;
@@ -55,6 +55,11 @@ public class SlidingDoorClickToggle : MonoBehaviour
             return;
         }
 
+        ToggleDoor();
+    }
+
+    public void Select(XrSelectContext context)
+    {
         ToggleDoor();
     }
 

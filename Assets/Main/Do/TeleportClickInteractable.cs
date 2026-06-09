@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 #endif
 
 [DisallowMultipleComponent]
-public class TeleportClickInteractable : MonoBehaviour
+public class TeleportClickInteractable : MonoBehaviour, IXrSelectable
 {
     [SerializeField] private Transform playerController;
     [SerializeField] private Transform target;
@@ -15,6 +15,7 @@ public class TeleportClickInteractable : MonoBehaviour
     [SerializeField] private bool createWorldLabel = true;
 
     private Camera _camera;
+    private XROriginPlayerAdapter _xrPlayer;
 
     public void Configure(Transform player, Transform teleportTarget, string buttonLabel, bool showWorldLabel = true)
     {
@@ -31,6 +32,8 @@ public class TeleportClickInteractable : MonoBehaviour
 
     private void Awake()
     {
+        _xrPlayer = XROriginPlayerAdapter.Resolve();
+
         if (createWorldLabel && transform.Find("WorldLabel") == null)
         {
             CreateWorldLabel();
@@ -64,8 +67,37 @@ public class TeleportClickInteractable : MonoBehaviour
         Teleport();
     }
 
+    public void Select(XrSelectContext context)
+    {
+        if (target != null)
+        {
+            Teleport();
+        }
+    }
+
     private void Teleport()
     {
+        if (target == null)
+        {
+            return;
+        }
+
+        if (_xrPlayer == null)
+        {
+            _xrPlayer = XROriginPlayerAdapter.Resolve();
+        }
+
+        if (_xrPlayer != null)
+        {
+            _xrPlayer.MoveTo(target);
+            return;
+        }
+
+        if (playerController == null)
+        {
+            return;
+        }
+
         var movementBounds = playerController.GetComponentInChildren<PlayerMovementBounds>(true);
         if (movementBounds != null)
         {
@@ -141,6 +173,7 @@ public class TeleportClickInteractable : MonoBehaviour
 
         var canvas = canvasGo.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
+        XrWorldPanelPresenter.EnsureTrackedRaycaster(canvas);
 
         var rect = canvasGo.GetComponent<RectTransform>();
         rect.sizeDelta = new Vector2(240f, 88f);

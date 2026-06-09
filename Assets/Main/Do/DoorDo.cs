@@ -12,9 +12,8 @@ public class DoorDo : DoBase
     public float openAngle;
     public float durTime=1;
 
-    private void OnMouseDown()
+    protected override void OnSelected(XrSelectContext context)
     {
-        if (IsPointerOverUI()) return;
         IsOpen = !IsOpen;
         var temp = Target == null ? transform : Target;
         if (IsOpen)

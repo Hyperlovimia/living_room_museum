@@ -7,9 +7,8 @@ using UnityEngine;
 public class AnswerDo : DoBase
 {
     
-    private void OnMouseDown()
+    protected override void OnSelected(XrSelectContext context)
     {
-        if (!IsPointerOverUI())
-            ModuleManager.Instance.EnterModule(ModuleConfig.MODULE_ANSWER);
+        ModuleManager.Instance.EnterModule(ModuleConfig.MODULE_ANSWER);
     }
 }

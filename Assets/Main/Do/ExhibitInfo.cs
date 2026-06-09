@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Video;
 
 [DisallowMultipleComponent]
-public class ExhibitInfo : MonoBehaviour
+public class ExhibitInfo : MonoBehaviour, IXrSelectable
 {
     [SerializeField] private string exhibitTitle = "Exhibit";
     [TextArea(4, 10)]
@@ -46,6 +46,21 @@ public class ExhibitInfo : MonoBehaviour
         loopVideo = loop;
         scriptedVideoEnabled = scriptedVideo;
         scriptedVideoCaption = scriptedCaption;
+    }
+
+    public void Select(XrSelectContext context)
+    {
+        var spawnRoomController = FindFirstObjectByType<SpawnRoomController>();
+        if (spawnRoomController != null && spawnRoomController.TryHandleFindTarget(this))
+        {
+            return;
+        }
+
+        var exhibitController = FindFirstObjectByType<ExhibitInteractionController>();
+        if (exhibitController != null && exhibitController.enabled)
+        {
+            exhibitController.OpenPanel(this);
+        }
     }
 
     private void Awake()

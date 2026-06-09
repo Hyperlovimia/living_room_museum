@@ -201,6 +201,15 @@ public class DraggableObject : MonoBehaviour
             _rigidbody = gameObject.AddComponent<Rigidbody>();
         }
 
+        if (GetComponent("XRGrabInteractable") != null)
+        {
+            _rigidbody.useGravity = true;
+            _rigidbody.isKinematic = false;
+            _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+            _rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            return;
+        }
+
         _rigidbody.useGravity = false;
         _rigidbody.isKinematic = true;
         _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;

@@ -3,10 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DoBase : MonoBehaviour
+public class DoBase : MonoBehaviour, IXrSelectable
 {
+    public void Select(XrSelectContext context)
+    {
+        OnSelected(context);
+    }
+
+    protected virtual void OnSelected(XrSelectContext context)
+    {
+    }
+
+    protected virtual void OnMouseDown()
+    {
+        if (IsPointerOverUI())
+        {
+            return;
+        }
+
+        Select(XrSelectContext.MouseFallback(gameObject));
+    }
+
     protected bool IsPointerOverUI()
     {
+        if (EventSystem.current == null)
+        {
+            return false;
+        }
+
         //创建一个点击事件
         PointerEventData eventData = new PointerEventData(EventSystem.current);
         eventData.position = Input.mousePosition;

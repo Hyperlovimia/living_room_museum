@@ -73,18 +73,22 @@ public class TeleportClickInteractable : MonoBehaviour
         }
 
         var firstPersonController = playerController.GetComponentInChildren<FirstPersonController>(true);
+        var starterAssetsInputs = playerController.GetComponentInChildren<StarterAssetsInputs>(true);
+        var characterController = playerController.GetComponentInChildren<CharacterController>(true);
+        var targetTransform = characterController != null ? characterController.transform : playerController;
+
         if (firstPersonController != null)
         {
             firstPersonController.enabled = false;
         }
 
-        var characterController = playerController.GetComponentInChildren<CharacterController>(true);
         if (characterController != null)
         {
             characterController.enabled = false;
         }
 
-        playerController.SetPositionAndRotation(target.position, target.rotation);
+        ClearMovementInput(starterAssetsInputs);
+        targetTransform.SetPositionAndRotation(target.position, target.rotation);
 
         if (characterController != null)
         {
@@ -95,6 +99,19 @@ public class TeleportClickInteractable : MonoBehaviour
         {
             firstPersonController.enabled = true;
         }
+
+        ClearMovementInput(starterAssetsInputs);
+    }
+
+    private static void ClearMovementInput(StarterAssetsInputs starterAssetsInputs)
+    {
+        if (starterAssetsInputs == null)
+        {
+            return;
+        }
+
+        starterAssetsInputs.MoveInput(Vector2.zero);
+        starterAssetsInputs.LookInput(Vector2.zero);
     }
 
     private Camera ResolveCamera()

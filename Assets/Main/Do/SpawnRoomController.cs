@@ -273,10 +273,29 @@ public class SpawnRoomController : MonoBehaviour
 
     private void MovePlayerTo(Vector3 position, Quaternion rotation)
     {
-        var cc = playerController.GetComponentInChildren<CharacterController>();
-        if (cc != null) cc.enabled = false;
-        playerController.SetPositionAndRotation(position, rotation);
-        if (cc != null) cc.enabled = true;
+        var characterController = playerController.GetComponentInChildren<CharacterController>(true);
+        var targetTransform = characterController != null ? characterController.transform : playerController;
+
+        if (_firstPersonController != null) _firstPersonController.enabled = false;
+        if (characterController != null) characterController.enabled = false;
+        ClearMovementInput();
+
+        targetTransform.SetPositionAndRotation(position, rotation);
+
+        if (characterController != null) characterController.enabled = true;
+        if (_firstPersonController != null) _firstPersonController.enabled = true;
+        ClearMovementInput();
+    }
+
+    private void ClearMovementInput()
+    {
+        if (_starterAssetsInputs == null)
+        {
+            return;
+        }
+
+        _starterAssetsInputs.MoveInput(Vector2.zero);
+        _starterAssetsInputs.LookInput(Vector2.zero);
     }
 
     private void ShowToast(string message)

@@ -202,7 +202,7 @@ public class LightingModeMenuController : DoBase
     {
         activeLights.Clear();
 
-        ActiveDo[] sceneLights = FindObjectsByType<ActiveDo>(FindObjectsInactive.Exclude);
+        ActiveDo[] sceneLights = FindObjectsByType<ActiveDo>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         foreach (ActiveDo activeDo in sceneLights)
         {
             if (activeDo != null && activeDo.SupportsLightingModes())

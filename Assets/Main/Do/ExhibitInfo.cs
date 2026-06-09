@@ -50,55 +50,31 @@ public class ExhibitInfo : MonoBehaviour
 
     private void Awake()
     {
-        if (autoCreateCollider && GetComponent<Collider>() == null)
+        if (autoCreateCollider && GetComponentInChildren<Collider>(true) == null)
         {
-            FitColliderToChildren();
+            AddMeshCollidersToChildren();
         }
     }
 
-    [ContextMenu("Fit Box Collider To Children")]
-    private void FitColliderToChildren()
+    [ContextMenu("Add Mesh Colliders To Children")]
+    private void AddMeshCollidersToChildren()
     {
-        var renderers = GetComponentsInChildren<Renderer>(true);
-        if (renderers.Length == 0)
+        var meshFilters = GetComponentsInChildren<MeshFilter>(true);
+        foreach (var meshFilter in meshFilters)
         {
-            return;
-        }
-
-        var hasBounds = false;
-        var localBounds = new Bounds(Vector3.zero, Vector3.zero);
-
-        foreach (var renderer in renderers)
-        {
-            var bounds = renderer.bounds;
-            foreach (var corner in GetBoundsCorners(bounds))
+            if (meshFilter.sharedMesh == null || meshFilter.GetComponent<Collider>() != null)
             {
-                var localPoint = transform.InverseTransformPoint(corner);
-                if (!hasBounds)
-                {
-                    localBounds = new Bounds(localPoint, Vector3.zero);
-                    hasBounds = true;
-                }
-                else
-                {
-                    localBounds.Encapsulate(localPoint);
-                }
+                continue;
             }
-        }
 
-        if (!hasBounds)
-        {
-            return;
-        }
+            if (meshFilter.GetComponent<Renderer>() == null)
+            {
+                continue;
+            }
 
-        var boxCollider = GetComponent<BoxCollider>();
-        if (boxCollider == null)
-        {
-            boxCollider = gameObject.AddComponent<BoxCollider>();
+            var meshCollider = meshFilter.gameObject.AddComponent<MeshCollider>();
+            meshCollider.sharedMesh = meshFilter.sharedMesh;
         }
-
-        boxCollider.center = localBounds.center;
-        boxCollider.size = localBounds.size;
     }
 
     private Texture ResolveFallbackTexture()
@@ -121,22 +97,5 @@ public class ExhibitInfo : MonoBehaviour
         }
 
         return _resolvedFallbackTexture;
-    }
-
-    private static Vector3[] GetBoundsCorners(Bounds bounds)
-    {
-        var min = bounds.min;
-        var max = bounds.max;
-        return new[]
-        {
-            new Vector3(min.x, min.y, min.z),
-            new Vector3(min.x, min.y, max.z),
-            new Vector3(min.x, max.y, min.z),
-            new Vector3(min.x, max.y, max.z),
-            new Vector3(max.x, min.y, min.z),
-            new Vector3(max.x, min.y, max.z),
-            new Vector3(max.x, max.y, min.z),
-            new Vector3(max.x, max.y, max.z),
-        };
     }
 }

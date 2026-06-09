@@ -10,10 +10,10 @@
   <Project Path="PICO.Platform.Editor.csproj" />
   <Project Path="Unity.StarterAssets.Editor.csproj" />
   <Project Path="Unity.StarterAssets.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Pico.Spatializer.csproj" />
   <Project Path="Pico.Spatializer.Editor.csproj" />
   <Project Path="Unity.XR.Interaction.Toolkit.Samples.StarterAssets.Editor.csproj" />
-  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Assembly-CSharp-firstpass.csproj" />
   <Project Path="URPWizard.csproj" />
 </Solution>

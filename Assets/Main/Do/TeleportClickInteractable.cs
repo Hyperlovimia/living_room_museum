@@ -1,9 +1,6 @@
 using StarterAssets;
 using UnityEngine;
 using UnityEngine.UI;
-#if ENABLE_INPUT_SYSTEM
-using UnityEngine.InputSystem;
-#endif
 
 [DisallowMultipleComponent]
 public class TeleportClickInteractable : MonoBehaviour, IXrSelectable
@@ -216,10 +213,6 @@ public class TeleportClickInteractable : MonoBehaviour, IXrSelectable
 
     private static bool WasInteractPressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        return Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-#else
-        return Input.GetMouseButtonDown(0);
-#endif
+        return XrMouseInput.WasPrimaryPressedThisFrame();
     }
 }

@@ -1,10 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class DoBase : MonoBehaviour, IXrSelectable
 {
+    [SerializeField] private Camera fallbackInteractionCamera;
+    [SerializeField] private float fallbackRayDistance = 200f;
+
     public void Select(XrSelectContext context)
     {
         OnSelected(context);
@@ -14,32 +15,62 @@ public class DoBase : MonoBehaviour, IXrSelectable
     {
     }
 
-    protected virtual void OnMouseDown()
+    protected virtual void Update()
     {
-        if (IsPointerOverUI())
+        if (!XrMouseInput.WasPrimaryPressedThisFrame() || IsPointerOverUI())
         {
             return;
         }
 
-        Select(XrSelectContext.MouseFallback(gameObject));
+        if (!TryGetMouseFallbackHit(out var hit))
+        {
+            return;
+        }
+
+        var hitTransform = hit.collider.transform;
+        if (hitTransform != transform && !hitTransform.IsChildOf(transform))
+        {
+            return;
+        }
+
+        Select(XrSelectContext.MouseFallback(gameObject, hit, true));
     }
 
     protected bool IsPointerOverUI()
     {
-        if (EventSystem.current == null)
+        return XrMouseInput.IsPointerOverUi();
+    }
+
+    private bool TryGetMouseFallbackHit(out RaycastHit hit)
+    {
+        var cameraToUse = ResolveFallbackInteractionCamera();
+        if (cameraToUse == null)
         {
+            hit = default;
             return false;
         }
 
-        //创建一个点击事件
-        PointerEventData eventData = new PointerEventData(EventSystem.current);
-        eventData.position = Input.mousePosition;
-        List<RaycastResult> raycastResults = new List<RaycastResult>();
-        //向点击位置发射一条射线，检测是否点击UI
-        EventSystem.current.RaycastAll(eventData, raycastResults);
-        if (raycastResults.Count > 0)
-            return true;
-        else
-            return false;
+        var pointerScreenPosition = XrMouseInput.GetPointerScreenPosition();
+        var ray = Cursor.lockState == CursorLockMode.Locked
+            ? cameraToUse.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f))
+            : cameraToUse.ScreenPointToRay(pointerScreenPosition);
+
+        return Physics.Raycast(ray, out hit, fallbackRayDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+    }
+
+    private Camera ResolveFallbackInteractionCamera()
+    {
+        if (fallbackInteractionCamera != null)
+        {
+            return fallbackInteractionCamera;
+        }
+
+        fallbackInteractionCamera = Camera.main;
+        if (fallbackInteractionCamera == null)
+        {
+            fallbackInteractionCamera = FindFirstObjectByType<Camera>();
+        }
+
+        return fallbackInteractionCamera;
     }
 }

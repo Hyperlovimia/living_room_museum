@@ -3,9 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit.UI;
-#if ENABLE_INPUT_SYSTEM
-using UnityEngine.InputSystem;
-#endif
 
 [DisallowMultipleComponent]
 public class LightingModeMenuController : DoBase
@@ -479,10 +476,6 @@ public class LightingModeMenuController : DoBase
 
     private static bool WasClosePressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        return Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
-#else
-        return Input.GetKeyDown(KeyCode.Escape);
-#endif
+        return XrMouseInput.WasEscapePressedThisFrame();
     }
 }

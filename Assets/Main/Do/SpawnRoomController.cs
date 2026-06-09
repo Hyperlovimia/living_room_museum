@@ -1,9 +1,6 @@
 using StarterAssets;
 using UnityEngine;
 using UnityEngine.UI;
-#if ENABLE_INPUT_SYSTEM
-using UnityEngine.InputSystem;
-#endif
 
 [DisallowMultipleComponent]
 public class SpawnRoomController : MonoBehaviour
@@ -720,21 +717,11 @@ public class SpawnRoomController : MonoBehaviour
 
     private static bool WasInteractPressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        return Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-#else
-        return Input.GetMouseButtonDown(0);
-#endif
+        return XrMouseInput.WasPrimaryPressedThisFrame();
     }
 
     private static bool WasClosePressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        var l = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-        var e = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
-        return l || e;
-#else
-        return Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Escape);
-#endif
+        return XrMouseInput.WasPrimaryPressedThisFrame() || XrMouseInput.WasEscapePressedThisFrame();
     }
 }

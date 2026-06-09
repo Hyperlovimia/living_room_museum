@@ -2,9 +2,6 @@ using StarterAssets;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
-#if ENABLE_INPUT_SYSTEM
-using UnityEngine.InputSystem;
-#endif
 
 [DisallowMultipleComponent]
 public class ExhibitInteractionController : MonoBehaviour, IXrSelectable
@@ -596,21 +593,11 @@ public class ExhibitInteractionController : MonoBehaviour, IXrSelectable
 
     private static bool WasInteractPressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        return Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-#else
-        return Input.GetMouseButtonDown(0);
-#endif
+        return XrMouseInput.WasPrimaryPressedThisFrame();
     }
 
     private static bool WasClosePressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        var leftClickPressed = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-        var escapePressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
-        return leftClickPressed || escapePressed;
-#else
-        return Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Escape);
-#endif
+        return XrMouseInput.WasPrimaryPressedThisFrame() || XrMouseInput.WasEscapePressedThisFrame();
     }
 }

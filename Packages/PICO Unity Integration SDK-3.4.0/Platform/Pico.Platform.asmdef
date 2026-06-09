@@ -9,8 +9,6 @@
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
-    "precompiledReferences": [],
     "versionDefines": [
         {
             "name": "com.unity.xr.management",

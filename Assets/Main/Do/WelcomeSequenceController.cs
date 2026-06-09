@@ -1,9 +1,6 @@
 using StarterAssets;
 using UnityEngine;
 using UnityEngine.UI;
-#if ENABLE_INPUT_SYSTEM
-using UnityEngine.InputSystem;
-#endif
 
 [DisallowMultipleComponent]
 public class WelcomeSequenceController : MonoBehaviour
@@ -234,12 +231,6 @@ public class WelcomeSequenceController : MonoBehaviour
 
     private static bool WasClosePressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        var mousePressed = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-        var escapePressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
-        return mousePressed || escapePressed;
-#else
-        return Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Escape);
-#endif
+        return XrMouseInput.WasPrimaryPressedThisFrame() || XrMouseInput.WasEscapePressedThisFrame();
     }
 }

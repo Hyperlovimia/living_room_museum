@@ -1,6 +1,5 @@
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 [DisallowMultipleComponent]
 public class SlidingDoorClickToggle : MonoBehaviour, IXrSelectable
@@ -39,7 +38,7 @@ public class SlidingDoorClickToggle : MonoBehaviour, IXrSelectable
 
     private void Update()
     {
-        if (!Input.GetMouseButtonDown(0) || IsPointerOverUi())
+        if (!XrMouseInput.WasPrimaryPressedThisFrame() || XrMouseInput.IsPointerOverUi())
         {
             return;
         }
@@ -74,7 +73,7 @@ public class SlidingDoorClickToggle : MonoBehaviour, IXrSelectable
 
         var ray = Cursor.lockState == CursorLockMode.Locked
             ? cameraToUse.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f))
-            : cameraToUse.ScreenPointToRay(Input.mousePosition);
+            : cameraToUse.ScreenPointToRay(XrMouseInput.GetPointerScreenPosition());
 
         return Physics.Raycast(ray, out hit, RaycastDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
     }
@@ -102,10 +101,5 @@ public class SlidingDoorClickToggle : MonoBehaviour, IXrSelectable
 
         var targetPosition = _isOpen ? _openedLocalPosition : _closedLocalPosition;
         _moveTween = Target.DOLocalMove(targetPosition, MoveDuration);
-    }
-
-    private static bool IsPointerOverUi()
-    {
-        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
 }

@@ -1,8 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-#if ENABLE_INPUT_SYSTEM
-using UnityEngine.InputSystem;
-#endif
 
 [DisallowMultipleComponent]
 public class MouseDragPickupController : MonoBehaviour
@@ -168,38 +165,22 @@ public class MouseDragPickupController : MonoBehaviour
 
     private static bool WasPrimaryClickPressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        return Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-#else
-        return Input.GetMouseButtonDown(0);
-#endif
+        return XrMouseInput.WasPrimaryPressedThisFrame();
     }
 
     private static bool WasSecondaryClickPressed()
     {
-#if ENABLE_INPUT_SYSTEM
-        return Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame;
-#else
-        return Input.GetMouseButtonDown(1);
-#endif
+        return XrMouseInput.WasSecondaryPressedThisFrame();
     }
 
     private static bool IsSecondaryClickHeld()
     {
-#if ENABLE_INPUT_SYSTEM
-        return Mouse.current != null && Mouse.current.rightButton.isPressed;
-#else
-        return Input.GetMouseButton(1);
-#endif
+        return XrMouseInput.IsSecondaryHeld();
     }
 
     private static bool WasSecondaryClickReleased()
     {
-#if ENABLE_INPUT_SYSTEM
-        return Mouse.current != null && Mouse.current.rightButton.wasReleasedThisFrame;
-#else
-        return Input.GetMouseButtonUp(1);
-#endif
+        return XrMouseInput.WasSecondaryReleasedThisFrame();
     }
 
     private Ray GetAimRay()
@@ -209,17 +190,6 @@ public class MouseDragPickupController : MonoBehaviour
 
     private static bool IsPointerOverUI()
     {
-        if (EventSystem.current == null)
-        {
-            return false;
-        }
-
-#if ENABLE_INPUT_SYSTEM
-        if (Mouse.current != null)
-        {
-            return EventSystem.current.IsPointerOverGameObject(Mouse.current.deviceId);
-        }
-#endif
-        return EventSystem.current.IsPointerOverGameObject();
+        return XrMouseInput.IsPointerOverUi();
     }
 }
